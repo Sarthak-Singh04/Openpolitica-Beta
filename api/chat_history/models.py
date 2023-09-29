@@ -9,6 +9,7 @@ class Transcript(models.Model):
     def __str__(self):
         return f"Transcript {self.transcript_id} by {self.user.username}"
 
+#chat models
 class ChatMessage(models.Model):
     chat_id = models.AutoField(primary_key=True)
     transcript = models.ForeignKey(Transcript, on_delete=models.CASCADE)
