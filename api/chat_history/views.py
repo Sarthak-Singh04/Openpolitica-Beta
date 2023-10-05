@@ -19,6 +19,13 @@ class AllTranscripts(APIView):
         # Serialize and return the transcripts
         serializer = TranscriptSerializer(user_transcripts, many=True)
         return Response(serializer.data)
+    
+    def delete(self, request, user_id):
+        transcripts = Transcript.objects.filter(user_id=user_id)
+        for transcript in transcripts:
+            transcript.delete()
+        return Response({"message": "Transcripts deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
+    
 
 class CreateMessages(APIView):
     def get(self, request, transcript_id):

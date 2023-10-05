@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "user",
     "chat_history",
-    'rest_framework_swagger',
+   
     'drf_yasg'
 ]
 
