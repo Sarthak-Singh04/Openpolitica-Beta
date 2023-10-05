@@ -40,8 +40,14 @@ INSTALLED_APPS = [
     "rest_framework",
     "user",
     "chat_history",
+<<<<<<< HEAD
    
     'drf_yasg'
+=======
+    'rest_framework_swagger',
+    'drf_yasg',
+    'corsheaders'
+>>>>>>> 267f622d161d3acf3c6c8b8f1cfddfa3e7684395
 ]
 
 MIDDLEWARE = [
@@ -52,6 +58,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
 ]
 
 ROOT_URLCONF = "core.urls"
@@ -131,3 +138,5 @@ AUTH_USER_MODEL = "user.User"
 
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True
+
+
