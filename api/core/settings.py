@@ -42,7 +42,8 @@ INSTALLED_APPS = [
     "chat_history",
     'rest_framework_swagger',
     'drf_yasg',
-    'corsheaders'
+    'corsheaders',
+    'policycard'
 ]
 
 MIDDLEWARE = [
