@@ -40,14 +40,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "user",
     "chat_history",
-<<<<<<< HEAD
-   
     'drf_yasg'
-=======
-    'rest_framework_swagger',
-    'drf_yasg',
-    'corsheaders'
->>>>>>> 267f622d161d3acf3c6c8b8f1cfddfa3e7684395
 ]
 
 MIDDLEWARE = [
