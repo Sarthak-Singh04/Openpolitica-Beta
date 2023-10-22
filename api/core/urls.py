@@ -20,4 +20,5 @@ urlpatterns = [
     path("api/", include("user.urls")),
     path("api/", include("chat_history.urls")),
     path("swagger/", schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
+    path("policy-cards/", include("policycard.urls")),
 ]

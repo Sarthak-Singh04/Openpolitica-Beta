@@ -14,6 +14,12 @@ class PostListView(APIView):
         posts = Post.objects.all().order_by('-date_created')
         serializer = PostSerializer(posts, many=True)  # Use your serializer to serialize the data
         return Response(serializer.data, status=status.HTTP_200_OK)
-    
-    
+
+    def post(self, request):
+        serialized_post = PostSerializer(data=request.data)
+        if serialized_post.is_valid():
+            serialized_post.save()
+            return Response(serialized_post.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serialized_post.errors, status=status.HTTP_400_BAD_REQUEST)
         
