@@ -23,3 +23,28 @@ class PostListView(APIView):
         else:
             return Response(serialized_post.errors, status=status.HTTP_400_BAD_REQUEST)
         
+        
+        
+class PostCommentsView(APIView):
+    def get(self, request, post_id):
+        comments = Comment.objects.filter(post_id=post_id).order_by('-date_created')
+        serializer = CommentSerializer(comments, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+
+
+class AddCommentToPostView(APIView):
+    def post(self, request, post_id):
+        # Find the specific post
+        post = get_object_or_404(Post, id=post_id)
+        
+        # Create the comment and associate it with the post
+        serialized_comment = CommentSerializer(data=request.data)
+        if serialized_comment.is_valid():
+            comment = serialized_comment.save(post=post, author=request.user)
+            
+            # Redirect to the specific post after adding the comment
+            return redirect('post-comments', post_id=post.id)
+        else:
+            return Response(serialized_comment.errors, status=status.HTTP_400_BAD_REQUEST)
+        
