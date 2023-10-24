@@ -23,28 +23,32 @@ class PostListView(APIView):
         else:
             return Response(serialized_post.errors, status=status.HTTP_400_BAD_REQUEST)
         
-        
-        
+class PostView(APIView):
+    def get(self, request, eid):  # Change 'post_id' to 'eid'
+        post = get_object_or_404(Post, eid=eid)  # Change 'post_id' to 'eid'
+        serializer = PostSerializer(post)  # Use your serializer to serialize the data
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+   
 class PostCommentsView(APIView):
-    def get(self, request, post_id):
-        comments = Comment.objects.filter(post_id=post_id).order_by('-date_created')
+    def get(self, request, eid):  # Change 'post_id' to 'eid'
+        post = get_object_or_404(Post, eid=eid)  # Change 'post_id' to 'eid'
+        comments = Comment.objects.filter(post=post).order_by('-date_created')  # Use 'post' instead of 'post_id'
         serializer = CommentSerializer(comments, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
-    
 
 
 class AddCommentToPostView(APIView):
-    def post(self, request, post_id):
-        # Find the specific post
-        post = get_object_or_404(Post, id=post_id)
+    def post(self, request, eid):  # Change 'post_id' to 'eid'
+        post = get_object_or_404(Post, eid=eid)  # Change 'post_id' to 'eid'
         
         # Create the comment and associate it with the post
         serialized_comment = CommentSerializer(data=request.data)
         if serialized_comment.is_valid():
             comment = serialized_comment.save(post=post, author=request.user)
-            
-            # Redirect to the specific post after adding the comment
-            return redirect('post-comments', post_id=post.id)
+            return redirect('post-comments', eid=post.eid)
         else:
             return Response(serialized_comment.errors, status=status.HTTP_400_BAD_REQUEST)
+
         
