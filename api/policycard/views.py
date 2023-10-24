@@ -37,18 +37,16 @@ class PostCommentsView(APIView):
         comments = Comment.objects.filter(post=post).order_by('-date_created')  # Use 'post' instead of 'post_id'
         serializer = CommentSerializer(comments, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
-
-
-class AddCommentToPostView(APIView):
-    def post(self, request, eid):  # Change 'post_id' to 'eid'
-        post = get_object_or_404(Post, eid=eid)  # Change 'post_id' to 'eid'
-        
-        # Create the comment and associate it with the post
+    
+    def post(self, request, eid):
         serialized_comment = CommentSerializer(data=request.data)
         if serialized_comment.is_valid():
-            comment = serialized_comment.save(post=post, author=request.user)
-            return redirect('post-comments', eid=post.eid)
+            serialized_comment.save()
+            return Response(serialized_comment.data, status=status.HTTP_201_CREATED)
         else:
             return Response(serialized_comment.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
 
         
