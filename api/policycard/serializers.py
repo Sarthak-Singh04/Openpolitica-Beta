@@ -1,17 +1,18 @@
 from rest_framework import serializers
-from .models import Post, Comment, UserVote
+from .models import Policy, Comment, UserVote
 
 class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
         fields = '__all__'
 
-class PostSerializer(serializers.ModelSerializer):
-    #comments = CommentSerializer(many=True, read_only=True)
+  # Import the Policy model from your app
 
+class PolicySerializer(serializers.ModelSerializer):
     class Meta:
-        model = Post
-        fields = '__all__'
+        model = Policy
+        fields = ['policy_id', 'title', 'description', 'impact', 'cost', 'timeframe']
+
 
 class UserVoteSerializer(serializers.ModelSerializer):
     class Meta:
