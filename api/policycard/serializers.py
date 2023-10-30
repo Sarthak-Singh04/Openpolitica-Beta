@@ -11,7 +11,7 @@ class CommentSerializer(serializers.ModelSerializer):
 class PolicySerializer(serializers.ModelSerializer):
     class Meta:
         model = Policy
-        fields = ['policy_id', 'title', 'description', 'impact', 'cost', 'timeframe']
+        fields = ['eid', 'title', 'description', 'impact', 'cost', 'timeframe']
 
 
 class UserVoteSerializer(serializers.ModelSerializer):
