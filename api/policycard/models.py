@@ -20,20 +20,17 @@ class Votable(BaseModel):
     upvote_count = models.PositiveIntegerField(default=0)
     downvote_count = models.PositiveIntegerField(default=0)
     class Meta: abstract = True
-from django.db import models
-
-class Policy(Votable):
+class Post(Votable):
     title = models.CharField(max_length=200)
-    description = models.TextField()
-    impact = models.CharField(max_length=200, default="Expected positive impact")
-    cost = models.CharField(max_length=200, default="Estimated cost")
-    timeframe = models.CharField(max_length=200, default="Short-term")
-
+   
+    text = models.TextField(blank=True, null=True)
+    comment_count = models.PositiveIntegerField(default=0)
+    def children(self):
+        return self.comments.filter(parent=None)
     def __str__(self):
-        return self.title
-
+        return str(self.eid) + ": " + self.title
 class Comment(Votable):
-    post = models.ForeignKey(Policy, related_name='comments', on_delete=models.CASCADE)
+    post = models.ForeignKey(Post, related_name='comments', on_delete=models.CASCADE)
     author = models.ForeignKey(User, related_name='user_comments', on_delete=models.CASCADE)
     text = models.TextField()
     parent = models.ForeignKey('self', related_name='children', null=True, blank=True, on_delete=models.CASCADE)

@@ -1,8 +1,9 @@
 from django.db import models
 from user.models import User
+import uuid
 
 class Transcript(models.Model):
-    transcript_id = models.AutoField(primary_key=True)
+    transcript_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
 

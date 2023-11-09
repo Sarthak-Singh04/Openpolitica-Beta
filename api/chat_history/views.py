@@ -11,6 +11,16 @@ def llm_response(user_response: str) -> str:
     ai_response = f"Hello, you said: {user_response}"
     return ai_response
 
+
+class Transcription(APIView):
+    def post(self, request):
+        serialized_transcript = TranscriptSerializer(data=request.data)
+        if serialized_transcript.is_valid():
+            serialized_transcript.save()
+            return Response(serialized_transcript.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serialized_transcript.errors, status=status.HTTP_400_BAD_REQUEST)
+
 class AllTranscripts(APIView):
     def get(self, request, user_id):
         # Retrieve all transcripts for the given user
@@ -19,13 +29,6 @@ class AllTranscripts(APIView):
         # Serialize and return the transcripts
         serializer = TranscriptSerializer(user_transcripts, many=True)
         return Response(serializer.data)
-    
-    def delete(self, request, user_id):
-        transcripts = Transcript.objects.filter(user_id=user_id)
-        for transcript in transcripts:
-            transcript.delete()
-        return Response({"message": "Transcripts deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
-    
 
 class CreateMessages(APIView):
     def get(self, request, transcript_id):
@@ -63,12 +66,3 @@ class CreateMessages(APIView):
         transcript = get_object_or_404(Transcript, pk=transcript_id)
         transcript.delete()
         return Response({"message": "Transcript deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
-
-class Transcription(APIView):
-    def post(self, request):
-        serialized_transcript = TranscriptSerializer(data=request.data)
-        if serialized_transcript.is_valid():
-            serialized_transcript.save()
-            return Response(serialized_transcript.data, status=status.HTTP_201_CREATED)
-        else:
-            return Response(serialized_transcript.errors, status=status.HTTP_400_BAD_REQUEST)
