@@ -29,13 +29,19 @@ class Post(Votable):
         return self.comments.filter(parent=None)
     def __str__(self):
         return str(self.eid) + ": " + self.title
+
+
 class Comment(Votable):
     post = models.ForeignKey(Post, related_name='comments', on_delete=models.CASCADE)
     author = models.ForeignKey(User, related_name='user_comments', on_delete=models.CASCADE)
     text = models.TextField()
     parent = models.ForeignKey('self', related_name='children', null=True, blank=True, on_delete=models.CASCADE)
+    deleted = models.BooleanField(default=False)  # Add the 'deleted' field
     def __str__(self):
         return str(self.eid) + ": " + self.text
+
+
+
 class UserVote(BaseModel):
     UP_VOTE = 'U'
     DOWN_VOTE = 'D'
