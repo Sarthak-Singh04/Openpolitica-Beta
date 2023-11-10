@@ -37,6 +37,8 @@ class CreateMessages(APIView):
         
         # Retrieve all messages of a particular transcript
         user_messages = ChatMessage.objects.filter(transcript=transcript_id)
+        
+        
         # Serialize and return the messages
         serializer = ChatMessagesSerializer(user_messages, many=True)
         return Response(serializer.data)
@@ -44,6 +46,10 @@ class CreateMessages(APIView):
     def post(self, request, transcript_id):
         # Get the transcript object or return a 404 if not found
         transcript = get_object_or_404(Transcript, pk=transcript_id)
+        
+        messages = ChatMessage.objects.filter(transcript=transcript_id).order_by('-timestamp')
+        print(messages)
+
         
         # Extract user_response from the request data (adjust based on your request structure)
         user_response = request.data.get('user_response')
