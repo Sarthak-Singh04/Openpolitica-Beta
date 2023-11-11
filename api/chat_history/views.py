@@ -57,8 +57,7 @@ class CreateMessages(APIView):
         user_id = request.data.get('user')
         user = get_object_or_404(User, id=user_id)
         # Generate AI response based on user input
-        ai_response = llm_response(user_response)
-        #############ai_response = generate_response(user_response, message_data)
+        ai_response = generate_response(user_response, message_data)
 
         chat_message = ChatMessage.objects.create(
             transcript=transcript,
@@ -74,3 +73,5 @@ class CreateMessages(APIView):
         transcript = get_object_or_404(Transcript, pk=transcript_id)
         transcript.delete()
         return Response({"message": "Transcript deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
+    
+

@@ -42,8 +42,6 @@ class Comment(Votable):
     def __str__(self):
         return str(self.eid) + ": " + self.text
 
-
-
 class UserVote(BaseModel):
     UP_VOTE = 'U'
     DOWN_VOTE = 'D'
@@ -58,3 +56,17 @@ class UserVote(BaseModel):
     content_object = GenericForeignKey('content_type', 'object_id')
     vote_type = models.CharField(max_length=1, choices=VOTE_TYPE)
     class Meta: unique_together = ['voter', 'object_id', 'content_type']
+
+
+
+class UserNeeds(models.Model):
+    id = models.AutoField(primary_key=True)
+    text = models.CharField(max_length=255)
+    timestamp = models.DateTimeField()
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    context = models.CharField(max_length=255)
+    asc_pc_id = models.IntegerField()
+
+    class Meta:
+        db_table = "UserNeeds"
+
