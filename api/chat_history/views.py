@@ -4,13 +4,13 @@ from rest_framework import status
 from django.shortcuts import get_object_or_404
 from .models import Transcript, ChatMessage
 from .serializers import TranscriptSerializer, ChatMessagesSerializer
-
+from .Func1_chatResponse import generate_response
+from .apikey import apikey
 def llm_response(user_response: str) -> str:
     # Replace this with your actual AI response generation logic
     # For now, it echoes the user's input
     ai_response = f"Hello, you said: {user_response}"
     return ai_response
-
 
 class Transcription(APIView):
     def post(self, request):
@@ -58,14 +58,12 @@ class CreateMessages(APIView):
         # Generate AI response based on user input
         ai_response = llm_response(user_response)
 
-        # Create a new ChatMessage using the transcript object
         chat_message = ChatMessage.objects.create(
             transcript=transcript,
             user_response=user_response,
             ai_response=ai_response
         )
         chat_message.save()
-        # Serialize and return the created chat message with a 201 status code
         serializer = ChatMessagesSerializer(chat_message)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
