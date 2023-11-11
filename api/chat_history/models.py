@@ -14,7 +14,7 @@ class Transcript(models.Model):
 class ChatMessage(models.Model):
     chat_id = models.AutoField(primary_key=True)
     transcript = models.ForeignKey(Transcript, on_delete=models.CASCADE)
-    
+    user = models.ForeignKey(User, on_delete=models.CASCADE, default=None)  # Specify a default value
     user_response = models.TextField()
     ai_response = models.TextField()
     timestamp = models.DateTimeField(auto_now_add=True)

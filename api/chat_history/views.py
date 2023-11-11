@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.shortcuts import get_object_or_404
 from .models import Transcript, ChatMessage
+from user.models import User
 from .serializers import TranscriptSerializer, ChatMessagesSerializer
 from .Func1_chatResponse import generate_response
 from .apikey import apikey
@@ -49,17 +50,19 @@ class CreateMessages(APIView):
         
         messages = ChatMessage.objects.filter(transcript=transcript_id).order_by('timestamp')
         message_data = [{"user":message.user_response,"AI":message.ai_response} for message in messages]
-        print(message_data)
 
         
         # Extract user_response from the request data (adjust based on your request structure)
         user_response = request.data.get('user_response')
-
+        user_id = request.data.get('user')
+        user = get_object_or_404(User, id=user_id)
         # Generate AI response based on user input
         ai_response = llm_response(user_response)
+        #############ai_response = generate_response(user_response, message_data)
 
         chat_message = ChatMessage.objects.create(
             transcript=transcript,
+            user=user,
             user_response=user_response,
             ai_response=ai_response
         )
