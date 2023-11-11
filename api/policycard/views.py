@@ -11,12 +11,12 @@ from .serializers import *
 
 class PostListView(APIView):
     def get(self, request):
-        posts = Post.objects.all().order_by('-date_created')
-        serializer = PostSerializer(posts, many=True)  # Use your serializer to serialize the data
+        posts = PolicyCard.objects.all().order_by('-date_created')
+        serializer = PolicyCardSerializer(posts, many=True)  # Use your serializer to serialize the data
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request):
-        serialized_post = PostSerializer(data=request.data)
+        serialized_post = PolicyCardSerializer(data=request.data)
         if serialized_post.is_valid():
             serialized_post.save()
             return Response(serialized_post.data, status=status.HTTP_201_CREATED)
@@ -25,19 +25,19 @@ class PostListView(APIView):
         
 class PostView(APIView):
     def get(self, request, eid):  # Change 'post_id' to 'eid'
-        post = get_object_or_404(Post, eid=eid)  # Change 'post_id' to 'eid'
-        serializer = PostSerializer(post)  # Use your serializer to serialize the data
+        post = get_object_or_404(PolicyCard, eid=eid)  # Change 'post_id' to 'eid'
+        serializer = PolicyCardSerializer(post)  # Use your serializer to serialize the data
         return Response(serializer.data, status=status.HTTP_200_OK)
     
     def delete(self, request, eid):
-        post = get_object_or_404(Post, eid=eid)
+        post = get_object_or_404(PolicyCard, eid=eid)
         post.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
     
    
 class PostCommentsView(APIView):
     def get(self, request, eid):  # Change 'post_id' to 'eid'
-        post = get_object_or_404(Post, eid=eid)  # Change 'post_id' to 'eid'
+        post = get_object_or_404(PolicyCard, eid=eid)  # Change 'post_id' to 'eid'
         comments = Comment.objects.filter(post=post).order_by('-date_created')  # Use 'post' instead of 'post_id'
         serializer = CommentSerializer(comments, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
