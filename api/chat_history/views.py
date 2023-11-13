@@ -7,6 +7,7 @@ from user.models import User
 from .serializers import TranscriptSerializer, ChatMessagesSerializer
 from .Func1_chatResponse import generate_response
 from .apikey import apikey
+
 def llm_response(user_response: str) -> str:
     # Replace this with your actual AI response generation logic
     # For now, it echoes the user's input
@@ -57,8 +58,8 @@ class CreateMessages(APIView):
         user_id = request.data.get('user')
         user = get_object_or_404(User, id=user_id)
         # Generate AI response based on user input
-        ai_response = llm_response(user_response)
-        #####ai_response = generate_response(user_response, message_data)
+        ######ai_response = llm_response(user_response)
+        ai_response = generate_response(user_response, message_data)
 
         chat_message = ChatMessage.objects.create(
             transcript=transcript,
