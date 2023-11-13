@@ -9,4 +9,8 @@ urlpatterns = [
     path("all-messages/",views.ChatMessageList.as_view(), name = "ALL messages"),
     path('surveys/', views.SurveyAPIView.as_view(), name='survey-api'),
     path('surveys/<int:user_id>/<uuid:transcript_id>', views.SurveyAPIView.as_view(), name='user-surveys'),
+    path('surveys/<uuid:survey_id>/update/', views.SurveyUpdateApiView.as_view(), name='survey-update'),
+    path('policycardgeneration/<uuid:survey_id>', views.PolicyCardApiView.as_view(), name='policard-creation'),
 ]
+
+

@@ -2,7 +2,7 @@ import os
 import datetime
 import json
 #from apikey import apikey
-apikey = ""
+apikey = "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"
 from langchain.llms import OpenAI
 from langchain.prompts import PromptTemplate
 from langchain.chains import LLMChain

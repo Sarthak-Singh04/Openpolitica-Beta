@@ -59,14 +59,4 @@ class UserVote(BaseModel):
 
 
 
-class UserNeeds(models.Model):
-    id = models.AutoField(primary_key=True)
-    text = models.CharField(max_length=255)
-    timestamp = models.DateTimeField()
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    context = models.CharField(max_length=255)
-    asc_pc_id = models.IntegerField()
-
-    class Meta:
-        db_table = "UserNeeds"
 

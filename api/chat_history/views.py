@@ -7,9 +7,11 @@ from user.models import User
 from .serializers import TranscriptSerializer, ChatMessagesSerializer, SurveySerializer
 from .Func1_chatResponse import generate_response
 from .Func2_userneedextractor import UserNeedsExtractor
-import json
+from .Func3_policy import generate_policy_card
+from policycard.models import PolicyCard
+
 #from .apikey import apikey
-apikey = ""
+apikey = "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"
 def llm_response(user_response: str) -> str:
     # Replace this with your actual AI response generation logic
     # For now, it echoes the user's input
@@ -94,10 +96,15 @@ class SurveyAPIView(APIView):
             return Response(serialized_survey.data, status=status.HTTP_201_CREATED)
         else:
             return Response(serialized_survey.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+        
+   
+        
     
     def get(self, request, user_id, transcript_id):
         # Get the transcript object
         transcript = get_object_or_404(Transcript, pk=transcript_id)
+        Survey.objects.filter(transcript=transcript).delete()
 
         # Retrieve all chat messages associated with the transcript
         messages = ChatMessage.objects.filter(transcript=transcript).order_by('timestamp')
@@ -131,3 +138,47 @@ class SurveyAPIView(APIView):
             return Response(serializer.data)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class SurveyUpdateApiView(APIView):
+    
+    def patch(self, request, survey_id):
+        survey = get_object_or_404(Survey, pk=survey_id)
+        new_options = request.data.get('options')
+
+        if new_options is not None:
+            if not isinstance(new_options, list):
+                return Response({'detail': 'Invalid data format for options. Expected a list.'}, status=status.HTTP_400_BAD_REQUEST)
+
+            # Update the survey options
+            survey.options = new_options
+            survey.save()
+
+            # Serialize and return the updated survey
+            serializer = SurveySerializer(survey)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        return Response({'detail': 'New options not provided in the request data.'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class PolicyCardApiView(APIView):
+    
+    def get(self,request,survey_id):
+        survey = get_object_or_404(Survey, pk=survey_id)
+        data={}
+        for i in survey.options:
+            data[i[0]]=i[1]
+            
+            
+            
+        policy_card=generate_policy_card(data) 
+        print(policy_card)
+        
+        return Response({})      
+        
+    
+        
+        
+        
+        
+        
