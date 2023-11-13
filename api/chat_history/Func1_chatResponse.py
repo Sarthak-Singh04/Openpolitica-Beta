@@ -3,7 +3,8 @@ from langchain.chains import LLMChain
 from langchain.prompts import ChatPromptTemplate, MessagesPlaceholder, SystemMessagePromptTemplate, HumanMessagePromptTemplate
 from langchain.memory import ConversationBufferMemory
 from langchain.schema import HumanMessage, AIMessage
-from .apikey import apikey
+#from apikey import apikey
+apikey = ""
 def initialize_openai_model(api_key):
     # Initialize the OpenAI model with your API key
     # Here, we use the `OpenAI` class from Langchain
@@ -43,7 +44,7 @@ def generate_response(user_input, past_convo):
 
     return ai_response
 
-
+'''
 def main():
     api_key = apikey  # Replace with your actual API key
     model = initialize_openai_model(api_key)
@@ -67,3 +68,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+'''

@@ -21,3 +21,15 @@ class ChatMessage(models.Model):
 
     def __str__(self):
         return f"Chat Message {self.chat_id}"
+
+class Survey(models.Model):
+    survey_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    transcript = models.ForeignKey(Transcript, on_delete=models.CASCADE)
+    questions = models.CharField(max_length=255)
+    user_needs = models.IntegerField()
+    options = models.JSONField()
+    timestamp = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self):
+        return f"Survey {self.survey_id}"

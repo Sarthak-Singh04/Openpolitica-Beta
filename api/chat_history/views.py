@@ -2,12 +2,14 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from django.shortcuts import get_object_or_404
-from .models import Transcript, ChatMessage
+from .models import Transcript, ChatMessage, Survey
 from user.models import User
-from .serializers import TranscriptSerializer, ChatMessagesSerializer
+from .serializers import TranscriptSerializer, ChatMessagesSerializer, SurveySerializer
 from .Func1_chatResponse import generate_response
-from .apikey import apikey
-
+from .Func2_userneedextractor import UserNeedsExtractor
+import json
+#from .apikey import apikey
+apikey = ""
 def llm_response(user_response: str) -> str:
     # Replace this with your actual AI response generation logic
     # For now, it echoes the user's input
@@ -82,3 +84,50 @@ class ChatMessageList(APIView):
         queryset = ChatMessage.objects.all()
         serializer = ChatMessagesSerializer(queryset, many = True)
         return Response(serializer.data)
+    
+
+class SurveyAPIView(APIView):
+    def post(self, request):
+        serialized_survey = SurveySerializer(data=request.data)
+        if serialized_survey.is_valid():
+            serialized_survey.save()
+            return Response(serialized_survey.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serialized_survey.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def get(self, request, user_id, transcript_id):
+        # Get the transcript object
+        transcript = get_object_or_404(Transcript, pk=transcript_id)
+
+        # Retrieve all chat messages associated with the transcript
+        messages = ChatMessage.objects.filter(transcript=transcript).order_by('timestamp')
+
+        # Construct the chat transcript in the required format
+        chat_transcript = []
+        for message in messages:
+            chat_transcript.append({"role": "user", "content": message.user_response})
+            chat_transcript.append({"role": "assistant", "content": message.ai_response})
+
+        extractor = UserNeedsExtractor()
+        structured_needs, survey = extractor.run(chat_transcript)
+        print(survey)
+
+        # Update the questions in the survey
+        survey['questions'] = "rank these user needs"
+
+        # Create the survey data
+        survey_data = {
+            "user": user_id,
+            "transcript": transcript_id,
+            "questions": survey['questions'],
+            "user_needs": len(structured_needs),
+            "options": survey['options']
+        }
+
+        # Save the survey data and return it in the response
+        serializer = SurveySerializer(data=survey_data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
