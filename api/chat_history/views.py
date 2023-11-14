@@ -9,9 +9,10 @@ from .Func1_chatResponse import generate_response
 from .Func2_userneedextractor import UserNeedsExtractor
 from .Func3_policy import generate_policy_card
 from policycard.models import PolicyCard
+from policycard.serializers import PolicyCardSerializer
 
 #from .apikey import apikey
-apikey = "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"
+apikey = ""
 def llm_response(user_response: str) -> str:
     # Replace this with your actual AI response generation logic
     # For now, it echoes the user's input
@@ -163,22 +164,30 @@ class SurveyUpdateApiView(APIView):
 
 class PolicyCardApiView(APIView):
     
-    def get(self,request,survey_id):
+    def get(self, request, survey_id, transcript_id):
         survey = get_object_or_404(Survey, pk=survey_id)
-        data={}
+        
+        
+        data = {}
         for i in survey.options:
-            data[i[0]]=i[1]
+            data[i[0]] = i[1]
             
+        policy_cards = generate_policy_card(data)
+        
+        # Assuming generate_policy_card returns a list of dictionaries
+        generated_policy_cards = []
+        for policy_card_data in policy_cards:
+            # Add the survey_id and transcript_id to the policy card data
+            policy_card_data['survey_id'] = survey_id
+            policy_card_data['transcript_id'] = transcript_id
             
-            
-        policy_card=generate_policy_card(data) 
-        print(policy_card)
+            # Assuming you have a serializer for PolicyCard
+            serializer = PolicyCardSerializer(data=policy_card_data)
+            if serializer.is_valid():
+                policy_card = serializer.save()
+                generated_policy_cards.append(PolicyCardSerializer(policy_card).data)
+            else:
+                # If there's an error in serialization, you can handle it accordingly
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
-        return Response({})      
-        
-    
-        
-        
-        
-        
-        
+        return Response({"message": "Policy cards generated successfully", "policy_cards": generated_policy_cards}, status=status.HTTP_201_CREATED)

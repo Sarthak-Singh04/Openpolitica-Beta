@@ -3,6 +3,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.conf import settings
 from user.models import User
+from chat_history.models import Transcript,Survey
 import uuid
 class BaseModel(models.Model):
     eid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -21,6 +22,8 @@ class Votable(BaseModel):
     downvote_count = models.PositiveIntegerField(default=0)
     class Meta: abstract = True
 class PolicyCard(Votable):
+    transcript_id=models.ForeignKey(Transcript,related_name="Transcript_id",on_delete=models.CASCADE,null=True,blank=True)
+    survey_id=models.ForeignKey(Survey,related_name="Survey_id",on_delete=models.CASCADE,null=True,blank=True)
     content = models.TextField()
     userneed_id = models.PositiveIntegerField()
     category = models.CharField(max_length=255)
