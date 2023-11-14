@@ -3,8 +3,8 @@ from langchain.chains import LLMChain
 from langchain.prompts import ChatPromptTemplate, MessagesPlaceholder, SystemMessagePromptTemplate, HumanMessagePromptTemplate
 from langchain.memory import ConversationBufferMemory
 from langchain.schema import HumanMessage, AIMessage
-#from apikey import apikey
-apikey = ""
+from .apikey import apikey
+
 def initialize_openai_model(api_key):
     # Initialize the OpenAI model with your API key
     # Here, we use the `OpenAI` class from Langchain

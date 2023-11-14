@@ -1,9 +1,9 @@
 import requests
-
+from .apikey import apikey
 import time 
 
 def generate_policy_card(user_needs_rankings):
-    openai_api_key=""
+    openai_api_key= apikey
     policy_cards = []
 
     for idx, (need, ranking) in enumerate(user_needs_rankings.items(), 1):
