@@ -8,6 +8,7 @@ from .serializers import TranscriptSerializer, ChatMessagesSerializer, SurveySer
 from .Func1_chatResponse import generate_response
 from .Func2_userneedextractor import UserNeedsExtractor
 from .Func3_policy import generate_policy_card
+from .Func4_titleGeneration import generate_chat_title
 from policycard.models import PolicyCard
 from policycard.serializers import PolicyCardSerializer
 
@@ -36,6 +37,36 @@ class AllTranscripts(APIView):
         # Serialize and return the transcripts
         serializer = TranscriptSerializer(user_transcripts, many=True)
         return Response(serializer.data)
+
+
+class GenerateUpdateTitle(APIView):
+    def post(self, request, transcript_id):
+        # Get the transcript object or return a 404 if not found
+        transcript = get_object_or_404(Transcript, transcript_id=transcript_id)
+        # Extract the title from the request data (assuming it's provided by the frontend)
+        provided_title = request.data.get('title')
+        # Generate a new title using your custom function (replace with your actual logic)
+        generated_title = generate_chat_title(provided_title)
+        # Update the transcript with the new title
+        transcript.title = generated_title
+        transcript.save()
+        serializer = TranscriptSerializer(transcript)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    def patch(self, request, transcript_id):
+        # Get the transcript object or return a 404 if not found
+        transcript = get_object_or_404(Transcript, transcript_id=transcript_id)
+        
+        # Extract the new title from the request data
+        new_title = request.data.get('title')
+
+        # Update the title and save the transcript
+        transcript.title = new_title
+        transcript.save()
+
+        # Return a response indicating success
+        return Response({"message": "Transcript title updated successfully"}, status=status.HTTP_200_OK)
+
 
 class CreateMessages(APIView):
     def get(self, request, transcript_id):
@@ -80,7 +111,6 @@ class CreateMessages(APIView):
         transcript = get_object_or_404(Transcript, pk=transcript_id)
         transcript.delete()
         return Response({"message": "Transcript deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
-    
 
 class ChatMessageList(APIView):
     def get(self, request):
