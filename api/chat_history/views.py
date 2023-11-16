@@ -11,7 +11,7 @@ from .Func3_policy import generate_policy_card
 from .Func4_titleGeneration import generate_chat_title
 from policycard.models import PolicyCard
 from policycard.serializers import PolicyCardSerializer
-
+from .apikey import apikey
 #from .apikey import apikey
 apikey = ""
 def llm_response(user_response: str) -> str:

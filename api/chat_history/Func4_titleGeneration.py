@@ -1,5 +1,6 @@
 import openai # Ensure you have the OpenAI library installed
 from .apikey import apikey
+
 def generate_chat_title(question):
     openai_api_key = apikey
     """
@@ -30,9 +31,7 @@ def generate_chat_title(question):
         print(f"Error in generating title: {e}")
         return "Chat Title Generation Error"
 
-'''
 
 initial_question = "How can I improve my time management skills?"
-chat_title = generate_chat_title(initial_question, openai_api_key)
+chat_title = generate_chat_title(initial_question)
 print(chat_title)
-'''
